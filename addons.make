@@ -1,0 +1,5 @@
+ofxGui
+ofxIOSDeviceMotion
+ofxiPhone
+ofxNetwork
+ofxOsc

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>984216E0-1FA3-40A8-85DF-99C809E3E005</string>
+	<key>IDESourceControlProjectName</key>
+	<string>iosLAF</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>29A4BAFF-F64F-45CA-BC63-4B3D93CB706A</key>
+		<string>ssh://github.com/gameoverhack/openFrameworks.git</string>
+		<key>E4E7C322-3DF2-4093-988D-84666E29F51D</key>
+		<string>ssh://github.com/gameoverhack/ofxIOSDeviceMotion.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>apps/devDONOTDELETE/iosLAF/iosLAF.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>29A4BAFF-F64F-45CA-BC63-4B3D93CB706A</key>
+		<string>../../../../..</string>
+		<key>E4E7C322-3DF2-4093-988D-84666E29F51D</key>
+		<string>../../../../../addons/ofxIOSDeviceMotion</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://github.com/gameoverhack/openFrameworks.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>29A4BAFF-F64F-45CA-BC63-4B3D93CB706A</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>29A4BAFF-F64F-45CA-BC63-4B3D93CB706A</string>
+			<key>IDESourceControlWCCName</key>
+			<string>of007</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>E4E7C322-3DF2-4093-988D-84666E29F51D</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ofxIOSDeviceMotion</string>
+		</dict>
+	</array>
+</dict>
+</plist>
