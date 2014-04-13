@@ -1,0 +1,29 @@
+#System
+.DS_Store
+
+#Applications
+*.app
+*.exe
+*.bak
+*.log
+
+bin/data/recordings/*.txt
+bin/data/csv/*.csv
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+
+!libACE.dylib
+!libYARP_init.a
+!libYARP_OS.a
