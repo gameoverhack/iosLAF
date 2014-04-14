@@ -3,9 +3,12 @@
 //--------------------------------------------------------------
 void testApp::setup(){
 	
-    sampleRate = 60.0;
-    ipAddress = "10.0.1.14";
-    ipPort = 6666;
+    // open UDP broadcast port
+    UDPbroadcast.Create();
+    UDPbroadcast.Bind(10001);
+    UDPbroadcast.SetNonBlocking(true);
+    
+    sampleRate = 30.0;
     
 	//force landscape oreintation
 	ofSetOrientation(OF_ORIENTATION_90_RIGHT);
@@ -28,69 +31,48 @@ void testApp::setup(){
     btnRate.setup(ofGetWidth() - tSize, tSize * 3, tSize, tSize, "rate");
     btnRecord.setup(0, 0, tSize * 2, ofGetHeight(), "record");
     
-    
     btnReset.setToggle(true);
     btnRecord.setToggle(true);
     btnRate.setToggle(true);
     btnShowHistory.setState(true);
     
-    // setup keyboard
-    keyboard = new ofxiPhoneKeyboard(tSize * 2 + 1, 0, tSize * 1.5, 18);
-    keyboard->setVisible(true);
-	keyboard->setBgColor(255, 255, 255, 255);
-	keyboard->setFontColor(0,0,0, 255);
-	keyboard->setFontSize(14);
-    keyboard->setText(ipAddress + ":" + ofToString(ipPort));
-    
-    // setup osc
-    ofLogNotice() << "Connecting to OSC server at:" << ipAddress << ":" << ipPort << endl;
-    oscSender.setup(ipAddress, ipPort);
-    bOscIsSetup = true;
+    bOscIsSetup = false;
     
 	ofBackground(0, 0, 0);
+    
+    // determine client IP addresse and root
+    clientIPfull = getIPAddress();
+    clientIProot = clientIPfull.substr(0, clientIPfull.rfind("."));
+    clientID = ofToInt(clientIPfull.substr(serverIPfull.rfind(".") + 1, string::npos));
+    serverIPfull = ""; // nothing until we get a ping from the server on x.x.x.255
+    
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
     
-    if(keyboard->isKeyboardShowing() && bOscIsSetup) bOscIsSetup = false;
+    char udpBroadcastMessageChar[1024];
+    UDPbroadcast.Receive(udpBroadcastMessageChar, 1024);
+    string udpBroadcastMessageStr = udpBroadcastMessageChar;
     
-    if(!keyboard->isKeyboardShowing() && !bOscIsSetup){
+    if(udpBroadcastMessageStr != ""){
         
-        cout << "heh: " << keyboard->getText() << endl;
+        ofLogVerbose() << "UDP Broadcast Message: " << udpBroadcastMessageStr << endl;
         
-        vector<string> ipPartsServer = ofSplitString(keyboard->getText(), ":");
-        vector<string> ipAddressParts = ofSplitString(ipPartsServer[0], ".");
-        
-        if(ipPartsServer.size() == 1 || ipPartsServer.size() == 2){
+        // setup IP address for server
+        if(serverIPfull == ""){
             
-            if(ipAddressParts.size() == 4){
-                
-                ipAddress = ipPartsServer[0];
-                if(ipPartsServer.size() == 2){
-                    ipPort = ofToInt(ipPartsServer[1]);
-                }else{
-                    ipPort = 6666;
-                }
-                
-                // setup osc/netwroking
-                
-                ofLogNotice() << "Connecting to OSC server at:" << ipAddress << ":" << ipPort << endl;
-                
-                vector<string> ipPartsClient = ofSplitString(getIPAddress(), ".");
-                clientID = ofToInt(ipPartsClient[ipPartsClient.size() - 1]);
-                
-                oscSender.setup(ipAddress, ipPort);
-                bOscIsSetup = true;
-                
-            }else{ // if(ipAddressParts.size() == 4){
-                return;
-            }
-        }else{ // if(ipPartsServer.size() == 1 || ipPartsServer.size() == 2){
-            return;
+            serverIPfull = clientIProot + "." + udpBroadcastMessageStr;
+            ofLogNotice() << "Detected Server Heartbeat from: " << serverIPfull;
+            
+            // connect OSC
+            ofLogNotice() << "Connecting to OSC server at: " << serverIPfull << ":" << 10003 << endl;
+            oscSender.setup(serverIPfull, 10003);
+            bOscIsSetup = true;
+            
         }
         
-    } // if(!keyboard->isKeyboardShowing() && !bOscIsSetup){
+    }
     
     if(!motion.getIsDataNew()) return;
     
@@ -225,17 +207,6 @@ void testApp::exit(){
 
 //--------------------------------------------------------------
 void testApp::touchDown(ofTouchEventArgs & touch){
-    
-    if (touch.id == 1){
-		
-		if(!keyboard->isKeyboardShowing()){
-			keyboard->openKeyboard();
-			keyboard->setVisible(true);
-		} else{
-			keyboard->setVisible(false);
-		}
-		
-	}
     
     btnReset.mousePressed(touch.x, touch.y);
     btnShowHistory.mousePressed(touch.x, touch.y);

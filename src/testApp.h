@@ -5,6 +5,7 @@
 #include "ofxiPhoneExtras.h"
 #include "ofxIOSDeviceMotion.h"
 #include "ofxOsc.h"
+#include "ofxNetwork.h"
 
 #import <ifaddrs.h>
 #import <arpa/inet.h>
@@ -125,6 +126,15 @@ public:
     void deviceOrientationChanged(int newOrientation);
     string getIPAddress();
     
+    // UDP broadcast server
+    ofxUDPManager UDPbroadcast;
+    
+    // ip address storage
+    string clientIPfull;
+    string clientIProot;
+    string serverIPbroadcast;
+    string serverIPfull;
+    
     ofxIOSDeviceMotion motion;
     
     void drawVector(float x, float y, float scale, vector<ofPoint> & vec, string label = "");
@@ -134,9 +144,6 @@ public:
     vector<ofPoint> attitudeHistory;
     
     bool bShowInfo, bShowHistory;
-    
-    string ipAddress;
-    int ipPort;
     
     bool bOscIsSetup;
     ofxOscSender oscSender;
@@ -152,7 +159,5 @@ public:
     int sendRateSkip = 1;
     
     float sampleRate;
-    
-    ofxiPhoneKeyboard* keyboard;
     
 };
