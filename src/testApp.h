@@ -6,6 +6,8 @@
 #include "ofxIOSDeviceMotion.h"
 #include "ofxOsc.h"
 #include "ofxNetwork.h"
+#include <yarp/os/impl/NameConfig.h>
+#include <yarp/os/all.h>
 
 #import <ifaddrs.h>
 #import <arpa/inet.h>
@@ -105,6 +107,35 @@ protected:
     
 };
 
+#pragma pack(push, 1)
+typedef struct{
+    int clientID;
+    int deviceType;
+    int serverType;
+    int timestamp;
+    float accelerationX;
+    float accelerationY;
+    float accelerationZ;
+    float rotationX;
+    float rotationY;
+    float rotationZ;
+    float attitudeX;
+    float attitudeY;
+    float attitudeZ;
+    float gravityX;
+    float gravityY;
+    float gravityZ;
+    float uaccelerationX;
+    float uaccelerationY;
+    float uaccelerationZ;
+} DeviceMessage;
+#pragma pack(pop)
+
+typedef union {
+    DeviceMessage deviceMessage;
+    char data[sizeof(DeviceMessage)];
+} DeviceMessageUnion;
+
 class testApp : public ofxiPhoneApp{
     
 public:
@@ -124,10 +155,19 @@ public:
     void gotFocus();
     void gotMemoryWarning();
     void deviceOrientationChanged(int newOrientation);
+    
+    void sendOSC(DeviceMessage& dm);
+    void sendYarp(DeviceMessage& dm);
+    void sendUDP(DeviceMessage& dm);
+    
     string getIPAddress();
     
     // UDP broadcast server
     ofxUDPManager UDPbroadcast;
+    
+    // YARP
+    yarp::os::Network yarp;
+    yarp::os::BufferedPort<yarp::os::Bottle> port;
     
     // ip address storage
     string clientIPfull;
@@ -145,7 +185,7 @@ public:
     
     bool bShowInfo, bShowHistory;
     
-    bool bOscIsSetup;
+    bool bOscIsSetup, bYarpIsSetup, bUdpIsSetup;
     ofxOscSender oscSender;
     int clientID;
     

@@ -21,6 +21,11 @@
 		640279ee111671bd026cb0137d5b121e /* ofxOscReceiver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = c2fac65c491d4231379f3298ec59c6e9 /* ofxOscReceiver.cpp */; };
 		67fe4c7b15c2f0478c8126c28fa6aad0 /* NetworkingUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3b361208cd4107e479f04e7bce6d93aa /* NetworkingUtils.cpp */; };
 		72a929d3561b8232a182abfcbb325491 /* ofxOscBundle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65eefa3da3526e9cdd9c21f90d9b5684 /* ofxOscBundle.cpp */; };
+		775B2D3F18FC7ED500263D1E /* Project.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 775B2D3E18FC7ED500263D1E /* Project.xcconfig */; };
+		775B4E3B18FC887600263D1E /* libACE.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 775B4E3818FC887600263D1E /* libACE.a */; };
+		775B4E3C18FC887600263D1E /* libYARP_init.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 775B4E3918FC887600263D1E /* libYARP_init.a */; };
+		775B4E3D18FC887600263D1E /* libYARP_OS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 775B4E3A18FC887600263D1E /* libYARP_OS.a */; };
+		775B4E3F18FC88DB00263D1E /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 775B4E3E18FC88DB00263D1E /* libc++.dylib */; };
 		776CB2711853DCCB00B87B35 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 776CB2701853DCCB00B87B35 /* CoreMotion.framework */; };
 		77B7643B18FB968F008854B5 /* ofxTCPClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 77B7643118FB968F008854B5 /* ofxTCPClient.cpp */; };
 		77B7643C18FB968F008854B5 /* ofxTCPManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 77B7643318FB968F008854B5 /* ofxTCPManager.cpp */; };
@@ -90,6 +95,11 @@
 		6b65e6930994cc4b2d2b8b33b10f6e99 /* OscPacketListener.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = OscPacketListener.h; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscPacketListener.h; sourceTree = SOURCE_ROOT; };
 		72743294ff56c0169ec8ed7d1fadf910 /* ofxIOSDeviceMotion.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 30; name = ofxIOSDeviceMotion.mm; path = ../../../addons/ofxIOSDeviceMotion/src/ofxIOSDeviceMotion.mm; sourceTree = SOURCE_ROOT; };
 		7689f8a0f3d0b7635a8c310487cd0928 /* ofxOscArg.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxOscArg.h; path = ../../../addons/ofxOsc/src/ofxOscArg.h; sourceTree = SOURCE_ROOT; };
+		775B2D3E18FC7ED500263D1E /* Project.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Project.xcconfig; sourceTree = "<group>"; };
+		775B4E3818FC887600263D1E /* libACE.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libACE.a; sourceTree = "<group>"; };
+		775B4E3918FC887600263D1E /* libYARP_init.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libYARP_init.a; sourceTree = "<group>"; };
+		775B4E3A18FC887600263D1E /* libYARP_OS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libYARP_OS.a; sourceTree = "<group>"; };
+		775B4E3E18FC88DB00263D1E /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		776CB2701853DCCB00B87B35 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		77B7642F18FB968F008854B5 /* ofxNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxNetwork.h; sourceTree = "<group>"; };
 		77B7643018FB968F008854B5 /* ofxNetworkUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxNetworkUtils.h; sourceTree = "<group>"; };
@@ -145,12 +155,16 @@
 				E41D421413B3A95300A75A5D /* libofxiPhone_iphoneos_Debug.a in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
+				775B4E3C18FC887600263D1E /* libYARP_init.a in Frameworks */,
+				775B4E3F18FC88DB00263D1E /* libc++.dylib in Frameworks */,
 				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
 				BB16EBD20F2B2A9500518274 /* OpenGLES.framework in Frameworks */,
 				BB16EBD90F2B2AB500518274 /* QuartzCore.framework in Frameworks */,
 				BBE5EAB80F49AD8400F28951 /* AudioToolbox.framework in Frameworks */,
+				775B4E3B18FC887600263D1E /* libACE.a in Frameworks */,
 				53F323EB10A20EDB00E0DAE4 /* OpenAL.framework in Frameworks */,
 				5326AEA810A23A0500278DE6 /* CoreLocation.framework in Frameworks */,
+				775B4E3D18FC887600263D1E /* libYARP_OS.a in Frameworks */,
 				E4A823A412561BE3002F86A2 /* CoreGraphics.framework in Frameworks */,
 				E41D400B13B39D2100A75A5D /* AVFoundation.framework in Frameworks */,
 				E41D400C13B39D2100A75A5D /* CoreMedia.framework in Frameworks */,
@@ -174,6 +188,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				775B2D3E18FC7ED500263D1E /* Project.xcconfig */,
 				E4D8936A11527B74007E1F53 /* src */,
 				BB24E1F710DAA51900E9C588 /* openFrameworks */,
 				BB16F26B0F2B646B00518274 /* addons */,
@@ -248,6 +263,17 @@
 			name = posix;
 			sourceTree = "<group>";
 		};
+		775B4E3718FC887600263D1E /* libs */ = {
+			isa = PBXGroup;
+			children = (
+				775B4E3E18FC88DB00263D1E /* libc++.dylib */,
+				775B4E3818FC887600263D1E /* libACE.a */,
+				775B4E3918FC887600263D1E /* libYARP_init.a */,
+				775B4E3A18FC887600263D1E /* libYARP_OS.a */,
+			);
+			path = libs;
+			sourceTree = "<group>";
+		};
 		77B7642A18FB968F008854B5 /* ofxNetwork */ = {
 			isa = PBXGroup;
 			children = (
@@ -302,6 +328,7 @@
 		BB16F26B0F2B646B00518274 /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				775B4E3718FC887600263D1E /* libs */,
 				77B7642A18FB968F008854B5 /* ofxNetwork */,
 				32486bd6530c38b700436490ec496c48 /* ofxIOSDeviceMotion */,
 				e6053ab7fec63d5f83825b880ce53c41 /* ofxOsc */,
@@ -479,6 +506,7 @@
 			files = (
 				BB24DDCA10DA781C00E9C588 /* ofxiphone-Info.plist in Resources */,
 				E41D3ED713B38FB500A75A5D /* Project.xcconfig in Resources */,
+				775B2D3F18FC7ED500263D1E /* Project.xcconfig in Resources */,
 				E41D3EE613B3906D00A75A5D /* CoreOF.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -547,7 +575,40 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iPhone_Prefix.pch;
+				HEADER_SEARCH_PATHS = (
+					"$(OF_CORE_HEADERS)",
+					../../../addons/ofxIOSDeviceMotion/libs,
+					../../../addons/ofxIOSDeviceMotion/src,
+					../../../addons/ofxOsc/libs,
+					../../../addons/ofxOsc/libs/oscpack,
+					../../../addons/ofxOsc/libs/oscpack/src,
+					../../../addons/ofxOsc/libs/oscpack/src/ip,
+					../../../addons/ofxOsc/libs/oscpack/src/ip/posix,
+					../../../addons/ofxOsc/libs/oscpack/src/ip/win32,
+					../../../addons/ofxOsc/libs/oscpack/src/osc,
+					../../../addons/ofxOsc/src,
+					"$(ACE_ROOT)",
+					"$(YARP_DIR)/generated_include",
+					"$(YARP_DIR)/src/libYARP_OS/include",
+				);
 				INFOPLIST_FILE = "ofxiphone-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/gameover/Code/of007/addons/ofxYarp/libs/ace/ACE_wrappers/ace/Compression,
+					/Users/gameover/Code/of007/addons/ofxYarp/libs/ace/ACE_wrappers/ace/Compression/rle,
+					/Users/gameover/Code/of007/addons/ofxYarp/libs/ace/ACE_wrappers/ace/ETCL,
+					/Users/gameover/Code/of007/addons/ofxYarp/libs/ace/ACE_wrappers/ace,
+					/Users/gameover/Code/of007/addons/ofxYarp/libs/ace/ACE_wrappers/ace/Monitor_Control,
+					/Users/gameover/Code/of007/addons/ofxYarp/libs/ace/ACE_wrappers_ios/ace/Compression,
+					/Users/gameover/Code/of007/addons/ofxYarp/libs/ace/ACE_wrappers_ios/ace/Compression/rle,
+					/Users/gameover/Code/of007/addons/ofxYarp/libs/ace/ACE_wrappers_ios/ace/ETCL,
+					/Users/gameover/Code/of007/addons/ofxYarp/libs/ace/ACE_wrappers_ios/ace,
+					/Users/gameover/Code/of007/addons/ofxYarp/libs/ace/ACE_wrappers_ios/ace/Monitor_Control,
+					"/Users/gameover/Code/of007/addons/ofxYarp/libs/yarp/src/libYARP_OS/YARP.build/Debug/YARP_OS.build/Objects-normal/i386",
+					"/Users/gameover/Code/of007/addons/ofxYarp/libs/yarp/src/libYARP_OS/YARP.build/Debug/YARP_OS.build/Objects-normal/x86_64",
+					/Users/gameover/Code/of007/addons/ofxYarp/lib,
+					"$(PROJECT_DIR)/libs",
+				);
 				PRODUCT_NAME = iosLAF;
 				VALID_ARCHS = "armv6 armv7";
 			};
@@ -558,7 +619,40 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iPhone_Prefix.pch;
+				HEADER_SEARCH_PATHS = (
+					"$(OF_CORE_HEADERS)",
+					../../../addons/ofxIOSDeviceMotion/libs,
+					../../../addons/ofxIOSDeviceMotion/src,
+					../../../addons/ofxOsc/libs,
+					../../../addons/ofxOsc/libs/oscpack,
+					../../../addons/ofxOsc/libs/oscpack/src,
+					../../../addons/ofxOsc/libs/oscpack/src/ip,
+					../../../addons/ofxOsc/libs/oscpack/src/ip/posix,
+					../../../addons/ofxOsc/libs/oscpack/src/ip/win32,
+					../../../addons/ofxOsc/libs/oscpack/src/osc,
+					../../../addons/ofxOsc/src,
+					"$(ACE_ROOT)",
+					"$(YARP_DIR)/generated_include",
+					"$(YARP_DIR)/src/libYARP_OS/include",
+				);
 				INFOPLIST_FILE = "ofxiphone-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/gameover/Code/of007/addons/ofxYarp/libs/ace/ACE_wrappers/ace/Compression,
+					/Users/gameover/Code/of007/addons/ofxYarp/libs/ace/ACE_wrappers/ace/Compression/rle,
+					/Users/gameover/Code/of007/addons/ofxYarp/libs/ace/ACE_wrappers/ace/ETCL,
+					/Users/gameover/Code/of007/addons/ofxYarp/libs/ace/ACE_wrappers/ace,
+					/Users/gameover/Code/of007/addons/ofxYarp/libs/ace/ACE_wrappers/ace/Monitor_Control,
+					/Users/gameover/Code/of007/addons/ofxYarp/libs/ace/ACE_wrappers_ios/ace/Compression,
+					/Users/gameover/Code/of007/addons/ofxYarp/libs/ace/ACE_wrappers_ios/ace/Compression/rle,
+					/Users/gameover/Code/of007/addons/ofxYarp/libs/ace/ACE_wrappers_ios/ace/ETCL,
+					/Users/gameover/Code/of007/addons/ofxYarp/libs/ace/ACE_wrappers_ios/ace,
+					/Users/gameover/Code/of007/addons/ofxYarp/libs/ace/ACE_wrappers_ios/ace/Monitor_Control,
+					"/Users/gameover/Code/of007/addons/ofxYarp/libs/yarp/src/libYARP_OS/YARP.build/Debug/YARP_OS.build/Objects-normal/i386",
+					"/Users/gameover/Code/of007/addons/ofxYarp/libs/yarp/src/libYARP_OS/YARP.build/Debug/YARP_OS.build/Objects-normal/x86_64",
+					/Users/gameover/Code/of007/addons/ofxYarp/lib,
+					"$(PROJECT_DIR)/libs",
+				);
 				PRODUCT_NAME = iosLAF;
 				VALID_ARCHS = "armv6 armv7";
 			};
@@ -597,6 +691,7 @@
 					../../../addons/ofxOsc/src,
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/libs";
 				ONLY_ACTIVE_ARCH = NO;
 				PREBINDING = NO;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -637,6 +732,7 @@
 					../../../addons/ofxOsc/src,
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/libs";
 				ONLY_ACTIVE_ARCH = NO;
 				PREBINDING = NO;
 				SDKROOT = iphoneos;

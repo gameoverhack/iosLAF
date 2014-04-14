@@ -8,7 +8,7 @@ void testApp::setup(){
     UDPbroadcast.Bind(10001);
     UDPbroadcast.SetNonBlocking(true);
     
-    sampleRate = 30.0;
+    sampleRate = 60.0;
     
 	//force landscape oreintation
 	ofSetOrientation(OF_ORIENTATION_90_RIGHT);
@@ -36,14 +36,14 @@ void testApp::setup(){
     btnRate.setToggle(true);
     btnShowHistory.setState(true);
     
-    bOscIsSetup = false;
+    bOscIsSetup = bYarpIsSetup = bUdpIsSetup = false;
     
 	ofBackground(0, 0, 0);
     
     // determine client IP addresse and root
     clientIPfull = getIPAddress();
     clientIProot = clientIPfull.substr(0, clientIPfull.rfind("."));
-    clientID = ofToInt(clientIPfull.substr(serverIPfull.rfind(".") + 1, string::npos));
+    clientID = ofToInt(clientIPfull.substr(clientIPfull.rfind(".") + 1, string::npos));
     serverIPfull = ""; // nothing until we get a ping from the server on x.x.x.255
     
 }
@@ -57,18 +57,38 @@ void testApp::update(){
     
     if(udpBroadcastMessageStr != ""){
         
-        ofLogVerbose() << "UDP Broadcast Message: " << udpBroadcastMessageStr << endl;
+        cout << "UDP Broadcast Message: " << udpBroadcastMessageStr << endl;
+        
+        vector<string> command = ofSplitString(udpBroadcastMessageStr, "_");
         
         // setup IP address for server
-        if(serverIPfull == ""){
+        if(command[0] == "S" && serverIPfull == ""){
             
-            serverIPfull = clientIProot + "." + udpBroadcastMessageStr;
-            ofLogNotice() << "Detected Server Heartbeat from: " << serverIPfull;
+            serverIPfull = clientIProot + "." + command[1];
+            ofLogNotice() << "Connecting to server at: " << serverIPfull;
+            
+            string msg = "C_" + ofToString(clientID);
+            UDPbroadcast.Send(msg.c_str(), msg.size());
             
             // connect OSC
             ofLogNotice() << "Connecting to OSC server at: " << serverIPfull << ":" << 10003 << endl;
             oscSender.setup(serverIPfull, 10003);
             bOscIsSetup = true;
+            
+            // connect YARP
+            ofLogNotice() << "Connecting to YARP nameserver at: " << serverIPfull << ":" << 10003 << endl;
+            
+            yarp::os::impl::NameConfig nameConfig;
+            nameConfig.setManualConfig(serverIPfull.c_str(), 10000);
+            
+            string clientIDs = "/iOSClient"+ofToString(clientID);
+            
+            ofLogNotice() << "Connecting to YARP port at: " << clientIDs << ":" << 10003 << endl;
+            
+            bYarpIsSetup = port.open(clientIDs.c_str());
+            yarp::os::NetworkBase::connect(clientIDs.c_str(), "/motionReceiver");
+            
+            // connect UDP
             
         }
         
@@ -94,40 +114,150 @@ void testApp::update(){
         accelerationHistory.push_back(uacceleration);
         rotationHistory.push_back(rotation);
         attitudeHistory.push_back(attitude);
+        
     }
     
+    DeviceMessage dm;
+    
+    dm.clientID =       clientID;
+    dm.deviceType =     PHONETYPE_IPHONE;
+    dm.serverType =     SERVERTYPE_MATTG;
+    dm.timestamp =      ofGetElapsedTimeMillis();
+    dm.accelerationX =  acceleration.x;
+    dm.accelerationY =  acceleration.y;
+    dm.accelerationZ =  acceleration.z;
+    dm.rotationX =      rotation.x;
+    dm.rotationY =      rotation.y;
+    dm.rotationZ =      rotation.z;
+    dm.attitudeX =      attitude.x;
+    dm.attitudeY =      attitude.y;
+    dm.attitudeZ =      attitude.z;
+    dm.gravityX =       gravity.x;
+    dm.gravityY =       gravity.y;
+    dm.gravityZ =       gravity.z;
+    dm.uaccelerationX = uacceleration.x;
+    dm.uaccelerationY = uacceleration.y;
+    dm.uaccelerationZ = uacceleration.z;
+    
+    //sendOSC(dm);
+    sendYarp(dm);
+    
+//    ostringstream osmsg;
+//    osmsg << "P_";
+//    osmsg << clientID << "_";
+//    osmsg << PHONETYPE_IPHONE << "_";
+//    osmsg << SERVERTYPE_MATTG << "_";
+//    osmsg << ofGetElapsedTimeMillis() << "_";
+//    osmsg << acceleration.x << "_";
+//    osmsg << acceleration.y << "_";
+//    osmsg << acceleration.z << "_";
+//    osmsg << rotation.x << "_";
+//    osmsg << rotation.y << "_";
+//    osmsg << rotation.z << "_";
+//    osmsg << attitude.x << "_";
+//    osmsg << attitude.y << "_";
+//    osmsg << attitude.z << "_";
+//    osmsg << gravity.x << "_";
+//    osmsg << gravity.y << "_";
+//    osmsg << gravity.z << "_";
+//    osmsg << uacceleration.x << "_";
+//    osmsg << uacceleration.y << "_";
+//    osmsg << uacceleration.z << "_";
+//    
+//    UDPbroadcast.Send(osmsg.str().c_str(), osmsg.str().size());
+//    cout << osmsg << endl;
+//    cout << osmsg.str().size() << endl;
+//
+//    return;
+    
+    
+    
+}
+
+//--------------------------------------------------------------
+void testApp::sendOSC(DeviceMessage& dm){
+    
     if(!bOscIsSetup) return;
+    
+    cout << "send osc" << endl;
     
     ofxOscMessage m;
     m.setAddress("/device");
     
-    m.addIntArg(clientID);
-    m.addIntArg(PHONETYPE_IPHONE);
-    m.addIntArg(SERVERTYPE_MATTG);
+    m.addIntArg(dm.clientID);
+    m.addIntArg(dm.deviceType);
+    m.addIntArg(dm.serverType);
     
-    m.addIntArg(ofGetElapsedTimeMillis());
+    m.addIntArg(dm.timestamp);
     
-    m.addFloatArg(acceleration.x);
-    m.addFloatArg(acceleration.y);
-    m.addFloatArg(acceleration.z);
+    m.addFloatArg(dm.accelerationX);
+    m.addFloatArg(dm.accelerationY);
+    m.addFloatArg(dm.accelerationZ);
     
-    m.addFloatArg(rotation.x);
-    m.addFloatArg(rotation.y);
-    m.addFloatArg(rotation.z);
+    m.addFloatArg(dm.rotationX);
+    m.addFloatArg(dm.rotationY);
+    m.addFloatArg(dm.rotationZ);
     
-    m.addFloatArg(attitude.x);
-    m.addFloatArg(attitude.y);
-    m.addFloatArg(attitude.z);
+    m.addFloatArg(dm.attitudeX);
+    m.addFloatArg(dm.attitudeY);
+    m.addFloatArg(dm.attitudeZ);
     
-    m.addFloatArg(gravity.x);
-    m.addFloatArg(gravity.y);
-    m.addFloatArg(gravity.z);
+    m.addFloatArg(dm.gravityX);
+    m.addFloatArg(dm.gravityY);
+    m.addFloatArg(dm.gravityZ);
     
-    m.addFloatArg(uacceleration.x);
-    m.addFloatArg(uacceleration.y);
-    m.addFloatArg(uacceleration.z);
+    m.addFloatArg(dm.uaccelerationX);
+    m.addFloatArg(dm.uaccelerationY);
+    m.addFloatArg(dm.uaccelerationZ);
     
     oscSender.sendMessage(m);
+}
+
+//--------------------------------------------------------------
+void testApp::sendYarp(DeviceMessage& dm){
+    
+    if (!bYarpIsSetup) return;
+    
+    cout << "send yarp" << endl;
+    
+    yarp::os::Bottle *output;
+    output = &port.prepare();
+    output->clear();
+    
+    output->addString("/device");
+    
+    output->addInt(dm.clientID);
+    output->addInt(dm.deviceType);
+    output->addInt(dm.serverType);
+    
+    output->addInt(dm.timestamp);
+    
+    output->addDouble(dm.accelerationX);
+    output->addDouble(dm.accelerationY);
+    output->addDouble(dm.accelerationZ);
+    
+    output->addDouble(dm.rotationX);
+    output->addDouble(dm.rotationY);
+    output->addDouble(dm.rotationZ);
+    
+    output->addDouble(dm.attitudeX);
+    output->addDouble(dm.attitudeY);
+    output->addDouble(dm.attitudeZ);
+    
+    output->addDouble(dm.gravityX);
+    output->addDouble(dm.gravityY);
+    output->addDouble(dm.gravityZ);
+    
+    output->addDouble(dm.uaccelerationX);
+    output->addDouble(dm.uaccelerationY);
+    output->addDouble(dm.uaccelerationZ);
+    
+    port.write();
+    
+}
+
+//--------------------------------------------------------------
+void testApp::sendUDP(DeviceMessage& dm){
     
 }
 
