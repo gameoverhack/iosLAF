@@ -168,6 +168,14 @@ public:
     // YARP
     yarp::os::Network yarp;
     yarp::os::BufferedPort<yarp::os::Bottle> port;
+    yarp::os::ContactStyle style;
+    string clientYarpMode;
+    
+    // UDP
+    ofxUDPManager UDPSender;
+    
+    // mode
+    string clientMode;
     
     // ip address storage
     string clientIPfull;

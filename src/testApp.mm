@@ -19,8 +19,8 @@ void testApp::setup(){
     
     //    ofSetFrameRate(sampleRate);
     
-    bShowInfo = false;
-    bShowHistory = true;
+    bShowInfo = true;
+    bShowHistory = false;
     
     // setup simple buttons
     float tSize = (float)ofGetHeight() / 4.0;
@@ -34,9 +34,12 @@ void testApp::setup(){
     btnReset.setToggle(true);
     btnRecord.setToggle(true);
     btnRate.setToggle(true);
-    btnShowHistory.setState(true);
+    btnShowHistory.setState(bShowHistory);
+    btnShowInfo.setState(bShowInfo);
     
     bOscIsSetup = bYarpIsSetup = bUdpIsSetup = false;
+    clientMode = "NONE";
+    clientYarpMode = "udp";
     
 	ofBackground(0, 0, 0);
     
@@ -61,14 +64,29 @@ void testApp::update(){
         
         vector<string> command = ofSplitString(udpBroadcastMessageStr, "_");
         
+        if(command[0] == "M" && serverIPfull != ""){
+            clientMode = command[1];
+        }
+        
+        if(command[0] == "T"){
+            if(clientYarpMode != command[1]){
+                clientYarpMode = command[1];
+                string clientIDs = "/iOSClient"+ofToString(clientID);
+                if(clientYarpMode == "udp"){
+                    style.carrier = "udp";
+                }else{
+                    style.carrier = "tcp";
+                }
+                yarp::os::NetworkBase::disconnect(clientIDs.c_str(), "/motionReceiver");
+                yarp::os::NetworkBase::connect(clientIDs.c_str(), "/motionReceiver", style);
+            }
+        }
+        
         // setup IP address for server
         if(command[0] == "S" && serverIPfull == ""){
             
             serverIPfull = clientIProot + "." + command[1];
             ofLogNotice() << "Connecting to server at: " << serverIPfull;
-            
-            string msg = "C_" + ofToString(clientID);
-            UDPbroadcast.Send(msg.c_str(), msg.size());
             
             // connect OSC
             ofLogNotice() << "Connecting to OSC server at: " << serverIPfull << ":" << 10003 << endl;
@@ -76,20 +94,40 @@ void testApp::update(){
             bOscIsSetup = true;
             
             // connect YARP
-            ofLogNotice() << "Connecting to YARP nameserver at: " << serverIPfull << ":" << 10003 << endl;
+            ofLogNotice() << "Connecting to YARP nameserver at: " << serverIPfull << ":" << 10000 << endl;
             
             yarp::os::impl::NameConfig nameConfig;
             nameConfig.setManualConfig(serverIPfull.c_str(), 10000);
             
             string clientIDs = "/iOSClient"+ofToString(clientID);
             
-            ofLogNotice() << "Connecting to YARP port at: " << clientIDs << ":" << 10003 << endl;
+            ofLogNotice() << "Connecting to YARP port at: " << clientIDs << ":" << 10000 << endl;
             
             bYarpIsSetup = port.open(clientIDs.c_str());
-            yarp::os::NetworkBase::connect(clientIDs.c_str(), "/motionReceiver");
+            
+            if(clientYarpMode == "udp"){
+                style.carrier = "udp";
+            }else{
+                style.carrier = "tcp";
+            }
+            
+            yarp::os::NetworkBase::connect(clientIDs.c_str(), "/motionReceiver", style);
             
             // connect UDP
+            UDPSender.Create();
+            bUdpIsSetup = UDPSender.Connect(serverIPfull.c_str(), 10002);
+            if(bUdpIsSetup){
+                ofLogNotice() << "Connecting to UDP port at: " << serverIPfull << ":" << 10002 << endl;
+                UDPSender.SetNonBlocking(true);
+                string msg = "C_" + ofToString(clientID);
+                UDPSender.Send(msg.c_str(), msg.size());
+            }
             
+        }else{
+            if(bUdpIsSetup){
+                string msg = "C_" + ofToString(clientID);
+                UDPSender.Send(msg.c_str(), msg.size());
+            }
         }
         
     }
@@ -139,38 +177,9 @@ void testApp::update(){
     dm.uaccelerationY = uacceleration.y;
     dm.uaccelerationZ = uacceleration.z;
     
-    //sendOSC(dm);
-    sendYarp(dm);
-    
-//    ostringstream osmsg;
-//    osmsg << "P_";
-//    osmsg << clientID << "_";
-//    osmsg << PHONETYPE_IPHONE << "_";
-//    osmsg << SERVERTYPE_MATTG << "_";
-//    osmsg << ofGetElapsedTimeMillis() << "_";
-//    osmsg << acceleration.x << "_";
-//    osmsg << acceleration.y << "_";
-//    osmsg << acceleration.z << "_";
-//    osmsg << rotation.x << "_";
-//    osmsg << rotation.y << "_";
-//    osmsg << rotation.z << "_";
-//    osmsg << attitude.x << "_";
-//    osmsg << attitude.y << "_";
-//    osmsg << attitude.z << "_";
-//    osmsg << gravity.x << "_";
-//    osmsg << gravity.y << "_";
-//    osmsg << gravity.z << "_";
-//    osmsg << uacceleration.x << "_";
-//    osmsg << uacceleration.y << "_";
-//    osmsg << uacceleration.z << "_";
-//    
-//    UDPbroadcast.Send(osmsg.str().c_str(), osmsg.str().size());
-//    cout << osmsg << endl;
-//    cout << osmsg.str().size() << endl;
-//
-//    return;
-    
-    
+    if(clientMode == "OSC") sendOSC(dm);
+    if(clientMode == "UDP") sendUDP(dm);
+    if(clientMode == "YRP") sendYarp(dm);
     
 }
 
@@ -178,8 +187,6 @@ void testApp::update(){
 void testApp::sendOSC(DeviceMessage& dm){
     
     if(!bOscIsSetup) return;
-    
-    cout << "send osc" << endl;
     
     ofxOscMessage m;
     m.setAddress("/device");
@@ -217,8 +224,6 @@ void testApp::sendOSC(DeviceMessage& dm){
 void testApp::sendYarp(DeviceMessage& dm){
     
     if (!bYarpIsSetup) return;
-    
-    cout << "send yarp" << endl;
     
     yarp::os::Bottle *output;
     output = &port.prepare();
@@ -259,6 +264,21 @@ void testApp::sendYarp(DeviceMessage& dm){
 //--------------------------------------------------------------
 void testApp::sendUDP(DeviceMessage& dm){
     
+    if (!bUdpIsSetup) return;
+    
+    DeviceMessageUnion dmu;
+    dmu.deviceMessage = dm;
+    
+//    cout << dmu.deviceMessage.clientID << " " << endl;
+//    
+//    for(int i = 0; i < sizeof(DeviceMessage); i++){
+//        cout << hex << (int)dmu.data[i] << " ";
+//    }
+//    
+//    cout << endl;
+    
+    UDPSender.Send(dmu.data, sizeof(dmu));
+    
 }
 
 //--------------------------------------------------------------
@@ -276,6 +296,8 @@ void testApp::draw(){
         
         ostringstream os;
         os << "FPS: " << ofGetFrameRate() << endl;
+        os << "Mode: " << clientMode << endl;
+        os << "YRPC: " << clientYarpMode << endl;
         os << motion.getSensorDataAsString() << endl;
         ofDrawBitmapString(os.str(), 20, 20);
         
